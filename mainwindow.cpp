@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <stdio.h>
 #include "signupdialog.h"
+#include "videodialog.h"
 
 int cursorpos;
 int cursorpos2;
@@ -759,4 +760,11 @@ void MainWindow::on_Button_bar_clicked()
         ui->inputPassword->setText(ui->inputPassword->text().insert(cursorpos2, q[ui->Button_shift->isChecked()]));
         cursorpos2++;
     }
+}
+
+void MainWindow::on_LoginButton_clicked()
+{
+    ui->KeyboardDock->hide();
+    VideoDialog dlg;
+    dlg.exec();
 }

@@ -15,14 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mylineedit.cpp \
-    signupdialog.cpp
+    signupdialog.cpp \
+    videodialog.cpp
 
 HEADERS  += mainwindow.h \
     mylineedit.h \
-    signupdialog.h
+    signupdialog.h \
+    videodialog.h
 
 FORMS    += mainwindow.ui \
-    signupdialog.ui
+    signupdialog.ui \
+    videodialog.ui
 
 RESOURCES += \
     BASIC.qrc

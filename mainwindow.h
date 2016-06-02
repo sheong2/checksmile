@@ -112,6 +112,8 @@ private slots:
 
     void on_Button_bar_clicked();
 
+    void on_LoginButton_clicked();
+
 private:
     QTextCodec *codec;
     Ui::MainWindow *ui;
