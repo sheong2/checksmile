@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/checksmile_logo.png</file>
+        <file>images/down.png</file>
+        <file>images/ff.png</file>
+        <file>images/pause.png</file>
+        <file>images/play.png</file>
+        <file>images/rw.png</file>
+        <file>images/up.png</file>
+        <file>images/stop.png</file>
+    </qresource>
+</RCC>
