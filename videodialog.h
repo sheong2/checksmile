@@ -17,11 +17,8 @@ public:
     ~VideoDialog();
     
 private slots:
-    void on_rightbutton_clicked();
+
     void showlist();
-
-
-    void on_leftbutton_clicked();
 
     void on_pushButton_1_clicked();
 
@@ -35,10 +32,29 @@ private slots:
 
     void on_pushButton_6_clicked();
 
+    void on_WatchingTab_clicked();
+
+    void on_verticalScrollBar_sliderReleased();
+
+    void readydata();
+
 private:
     Ui::VideoDialog *ui;
-    int count;
-    QString vtitle;
+    QByteArray datagram;
+    char data[640];
+    int maxpage;
+    char id1[4];
+    char id2[4];
+    char id3[4];
+    char id4[4];
+    char id5[4];
+    char id6[4];
+    QString name1;
+    QString name2;
+    QString name3;
+    QString name4;
+    QString name5;
+    QString name6;
 };
 
 #endif // VIDEODIALOG_H
