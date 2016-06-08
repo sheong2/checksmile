@@ -60,6 +60,26 @@
         <string/>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="4">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>중복 확인</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="idlabel">
           <property name="text">
@@ -83,13 +103,6 @@
         <item row="0" column="2">
          <widget class="MyLineEdit" name="inputID"/>
         </item>
-        <item row="0" column="3">
-         <widget class="QLabel" name="label1">
-          <property name="text">
-           <string>영어소문자/숫자/_만 이용 가능</string>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="pwlabel">
           <property name="text">
@@ -97,8 +110,15 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <spacer name="horizontalSpacer_2">
+        <item row="1" column="2">
+         <widget class="MyLineEdit" name="inputPassword">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <spacer name="horizontalSpacer_6">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -109,13 +129,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item row="1" column="2">
-         <widget class="MyLineEdit" name="inputPassword">
-          <property name="echoMode">
-           <enum>QLineEdit::Password</enum>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
@@ -129,7 +142,7 @@
         <string notr="true">color: rgb(209, 0, 3);</string>
        </property>
        <property name="text">
-        <string>사용할 수 없는 아이디입니다. 다시 입력해주세요.</string>
+        <string>중복확인 버튼을 눌러주세요  </string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

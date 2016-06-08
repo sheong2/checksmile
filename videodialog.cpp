@@ -8,6 +8,8 @@
 #include <QStackedLayout>
 #include <QSize>
 #include <stdio.h>
+#include "mylineedit.h"
+#include <QMouseEvent>
 #define lb(j) label_##j
 #define btn(j) pushButton_##j
 int PG;//현재페이지 (1,7,13 등등)
@@ -21,17 +23,20 @@ VideoDialog::VideoDialog(QWidget *parent) :
 
     ui->setupUi(this);
     ui->verticalScrollBar->setMinimum(1);
-
-    a=13;
-    N=a;
-    PG=1;
+    ui->dockWidget->hide();
+    connect(ui->SearchLine, SIGNAL(pressed()), this, SLOT(got_sig_from_searchline()));
 
     on_WatchingTab_clicked();
 }
 
+void VideoDialog::got_sig_from_searchline()
+{
+    ui->dockWidget->show();
+    cursor=ui->SearchLine->cursorPosition();
+}
+
 void VideoDialog::showlist()
 {
-    char i='0';
     char title[]="/mnt/nfs/test_contents/tn000.png";
 
     ui->lb(1)->setText(name1);
@@ -213,4 +218,370 @@ void VideoDialog::readydata()
     name4 = "1bak2il";
     name5 = "happyTogether2";
     name6 = "Comedy";
+}
+
+void VideoDialog::mousePressEvent(QMouseEvent *e)
+{
+    ui->dockWidget->hide();
+}
+
+void VideoDialog::on_Button_HIDE_clicked()
+{
+    ui->dockWidget->hide();
+}
+
+void VideoDialog::on_Button_Q_clicked()
+{
+    char q[2] = {'q', 'Q'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+     cursor++;
+}
+
+void VideoDialog::on_Button_W_clicked()
+{
+    char q[2] = {'w', 'W'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_RESET_clicked()
+{
+    ui->SearchLine->text().clear();
+    ui->SearchLine->setText(NULL);
+    cursor=0;
+}
+
+void VideoDialog::on_Button_E_clicked()
+{
+    char q[2] = {'e', 'E'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+    cursor++;
+}
+
+void VideoDialog::on_Button_R_clicked()
+{
+    char q[2] = {'r', 'R'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+    cursor++;
+}
+
+void VideoDialog::on_Button_T_clicked()
+{
+    char q[2] = {'t', 'T'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+    cursor++;
+}
+
+void VideoDialog::on_Button_Y_clicked()
+{
+    char q[2] = {'y', 'Y'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_U_clicked()
+{
+    char q[2] = {'u', 'U'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_I_clicked()
+{
+    char q[2] = {'i', 'i'};
+ ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_O_clicked()
+{
+    char q[2] = {'o', 'O'};
+ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_P_clicked()
+{
+    char q[2] = {'p', 'P'};
+ ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_Z_clicked()
+{
+    char q[2] = {'z', 'Z'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_X_clicked()
+{
+    char q[2] = {'x', 'X'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_C_clicked()
+{
+    char q[2] = {'c', 'C'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_V_clicked()
+{
+    char q[2] = {'v', 'V'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_B_clicked()
+{
+    char q[2] = {'b', 'B'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_N_clicked()
+{
+    char q[2] = {'n', 'N'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_M_clicked()
+{
+    char q[2] = {'m', 'M'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_DOT_clicked()
+{
+    char q[2] = {'.', ','};
+
+   ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_question_clicked()
+{
+    char q[2] = {'?', '!'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+
+void VideoDialog::on_Button_spacebar_clicked()
+{
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,' '));
+        cursor++;
+}
+
+void VideoDialog::on_Button_enter_clicked()
+{
+    ui->dockWidget->hide();
+}
+
+void VideoDialog::on_Button_del_clicked()
+{
+     ui->SearchLine->setText(ui->SearchLine->text().remove(--cursor, 1));
+}
+
+void VideoDialog::on_Button_A_clicked()
+{
+    char q[2] = {'q', 'Q'};
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_S_clicked()
+{
+    char q[2] = {'s', 'S'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_D_clicked()
+{
+    char q[2] = {'d', 'D'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_F_clicked()
+{
+    char q[2] = {'f', 'F'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_G_clicked()
+{
+    char q[2] = {'g', 'G'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_H_clicked()
+{
+    char q[2] = {'h', 'H'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_J_clicked()
+{
+    char q[2] = {'j', 'J'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_K_clicked()
+{
+    char q[2] = {'k', 'K'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_L_clicked()
+{
+    char q[2] = {'l', 'L'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_1_clicked()
+{
+    char q[2] = {'1', '1'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_2_clicked()
+{
+    char q[2] = {'2', '2'};
+
+   ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_3_clicked()
+{
+    char q[2] = {'3', '3'};
+
+   ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_4_clicked()
+{
+    char q[2] = {'4', '4'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_5_clicked()
+{
+    char q[2] = {'5', '5'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+}
+
+void VideoDialog::on_Button_6_clicked()
+{
+    char q[2] = {'6', '6'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_7_clicked()
+{
+    char q[2] = {'7', '7'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_8_clicked()
+{
+    char q[2] = {'8', '8'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_9_clicked()
+{
+    char q[2] = {'9', '9'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_0_clicked()
+{
+    char q[2] = {'0', '0'};
+
+    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_Button_bar_clicked()
+{
+    char q[2] = {'-', '_'};
+
+     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
+        cursor++;
+
+}
+
+void VideoDialog::on_logoutButton_clicked()
+{
+    close();
 }

@@ -38,7 +38,7 @@ PlayingDialog::PlayingDialog(char * id, QWidget *parent) :
         title[26]=id[0];
         title[27]=id[1];
         title[28]=id[2];
-        printf("%s", title);
+
         execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
     }else{
         sighandler_t sig_ret;

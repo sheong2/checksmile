@@ -10,7 +10,7 @@ class PlayingDialog;
 class PlayingDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit PlayingDialog(char * id, QWidget *parent = 0);
     ~PlayingDialog();
