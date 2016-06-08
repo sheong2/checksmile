@@ -83,6 +83,19 @@
         </widget>
        </item>
        <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QPushButton" name="WatchingTab">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -92,17 +105,50 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>166</width>
            <height>80</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">#WatchingTab
+{
+background-color: white;
+image: url(:/images/images/watching_normal.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 10em;
+padding: 6px;
+}
+#WatchingTab:checked
+{
+background-color: white;
+image: url(:/images/images/watching.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 10em;
+padding: 6px;
+}</string>
+         </property>
          <property name="text">
-          <string>WATCHING</string>
+          <string/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>160</width>
+           <height>80</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
          <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
           <bool>true</bool>
          </property>
         </widget>
@@ -117,15 +163,43 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>166</width>
            <height>80</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">#HistoryTab
+{
+background-color: white;
+image: url(:/images/images/history_normal.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 10em;
+padding: 6px;
+}
+
+#HistoryTab:checked
+{
+background-color: white;
+image: url(:/images/images/history.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 10em;
+padding: 6px;
+}</string>
+         </property>
          <property name="text">
-          <string>HISTORY</string>
+          <string/>
          </property>
          <property name="checkable">
           <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -139,30 +213,41 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>166</width>
            <height>80</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">#SuggestTab
+{
+background-color: white;
+image: url(:/images/images/suggest_normal.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 10em;
+padding: 6px;
+}
+#SuggestTab:checked
+{
+background-color: white;
+image: url(:/images/images/suggest.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 10em;
+padding: 6px;
+}</string>
+         </property>
          <property name="text">
-          <string>SUGGEST</string>
+          <string/>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -174,14 +259,32 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize">
+            <size>
+             <width>80</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
              <height>68</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">#logoutButton
+{
+background-color: white;
+image: url(:/images/images/exit.png);
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+padding: 6px;
+}</string>
+           </property>
            <property name="text">
-            <string>로그아웃</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -201,12 +304,15 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>73</width>
+             <width>80</width>
              <height>10</height>
             </size>
            </property>
            <property name="text">
-            <string>USER id here</string>
+            <string>USER ID</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>

@@ -134,6 +134,10 @@ private slots:
 
     void on_logoutButton_clicked();
 
+    void on_HistoryTab_clicked();
+
+    void on_SuggestTab_clicked();
+
 private:
     Ui::VideoDialog *ui;
     QByteArray datagram;

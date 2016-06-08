@@ -177,10 +177,6 @@ void VideoDialog::on_pushButton_6_clicked()
 
 void VideoDialog::on_WatchingTab_clicked()
 {
-    ui->WatchingTab->setChecked(true);
-    ui->HistoryTab->setChecked(false);
-    ui->SuggestTab->setChecked(false);
-
     //udp 통신으로 "WR001" 보내기
     //udp 통신으로 전체 페이지 갯수, 6개 ID, 제목 6개 받아오기
 
@@ -192,6 +188,24 @@ void VideoDialog::on_WatchingTab_clicked()
 
     PG=1;
     showlist();
+
+    ui->HistoryTab->setChecked(false);
+    ui->SuggestTab->setChecked(false);
+    ui->WatchingTab->setChecked(true);
+}
+
+void VideoDialog::on_HistoryTab_clicked()
+{
+    ui->WatchingTab->setChecked(false);
+    ui->SuggestTab->setChecked(false);
+    ui->HistoryTab->setChecked(true);
+}
+
+void VideoDialog::on_SuggestTab_clicked()
+{
+    ui->WatchingTab->setChecked(false);
+    ui->HistoryTab->setChecked(false);
+    ui->SuggestTab->setChecked(true);
 }
 
 void VideoDialog::on_verticalScrollBar_sliderReleased()

@@ -105,7 +105,7 @@ void PlayingDialog::on_BTN_Stop_clicked()
 
 void PlayingDialog::on_BTN_UP_clicked()
 {
-    write(fd_pipe[1], "0", 1);
+    write(fd_pipe[1], "o", 1);
 }
 
 void PlayingDialog::on_BTN_Down_clicked()

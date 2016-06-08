@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->inputPassword, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_pw(void)));
 
     codec = QTextCodec::codecForName("UTF8");
+
+
 }
 
 MainWindow::~MainWindow()
