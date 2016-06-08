@@ -111,9 +111,14 @@ private slots:
 
     void on_SignupButton_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_inputID_textChanged(const QString &arg1);
+
 private:
     Ui::SignupDialog *ui;
     QTextCodec *codec;
+    bool able;
 };
 
 #endif // SIGNUPDIALOG_H
