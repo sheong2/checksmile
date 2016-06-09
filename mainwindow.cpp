@@ -14,6 +14,8 @@ int cursorpos2;
 int focus=2;
 int shift;
 
+QString userid;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -21,8 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->Button_shift->setCheckable(true);
     ui->KeyboardDock->hide();
+    ui->warning->hide();
     connect(ui->inputID, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_id(void)));
     connect(ui->inputPassword, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_pw(void)));
+
+    init_udp();
 
     codec = QTextCodec::codecForName("UTF8");
 }
@@ -30,6 +35,39 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::init_udp()
+{
+    rcvthread = new rcvThread(this);
+
+    connect(rcvthread, SIGNAL(login_result(bool)), this, SLOT(login_result(bool)));
+    connect(rcvthread, SIGNAL(dup_id_result(bool)), &signdlg, SLOT(dup_id_result(bool)));
+
+    rcvthread->start();
+}
+
+void MainWindow::login_result(bool accept)
+{
+    if(!this->isActiveWindow()) return;
+    printf("로그인고\n");
+    if (accept)
+    {
+        ui->warning->hide();
+        ui->KeyboardDock->hide();
+        userid = ui->inputID->text();
+        //ui->inputID->text.clear();
+        ui->inputID->setText(NULL);
+       // ui->inputPassword->text.clear();
+        ui->inputPassword->setText(NULL);
+        VideoDialog dlg;
+        dlg.setWindowFlags(Qt::FramelessWindowHint);
+        dlg.exec();
+    }
+    else
+    {
+        ui->warning->show();
+    }
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *e)
@@ -54,7 +92,15 @@ void MainWindow::got_focus_sig_from_pw(void)
 void MainWindow::on_SignupButton_clicked()
 {
     ui->KeyboardDock->hide();
-    SignupDialog dlg;
+    ui->warning->hide();
+    signdlg.exec();
+}
+
+void MainWindow::on_LoginButton_clicked()
+{
+    ui->KeyboardDock->hide();
+    VideoDialog dlg;
+    dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
 }
 
@@ -760,12 +806,4 @@ void MainWindow::on_Button_bar_clicked()
         ui->inputPassword->setText(ui->inputPassword->text().insert(cursorpos2, q[ui->Button_shift->isChecked()]));
         cursorpos2++;
     }
-}
-
-void MainWindow::on_LoginButton_clicked()
-{
-    ui->KeyboardDock->hide();
-    VideoDialog dlg;
-    dlg.setWindowFlags(Qt::FramelessWindowHint);
-    dlg.exec();
 }

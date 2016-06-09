@@ -18,11 +18,11 @@ SignupDialog::SignupDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->KeyboardDock->hide();
     ui->SignupButton->setEnabled(false);
-    ui->warninglabel->hide();
     connect(ui->inputID, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_id(void)));
     connect(ui->inputPassword, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_pw(void)));
     cursorpos=0;
     cursorpos2=0;
+    able = false;
 
     codec = QTextCodec::codecForName("UTF8");
 }
@@ -30,6 +30,49 @@ SignupDialog::SignupDialog(QWidget *parent) :
 SignupDialog::~SignupDialog()
 {
     delete ui;
+}
+
+void SignupDialog::dup_id_result(bool accept)
+{
+    if(accept)
+    {
+        able = true;
+        ui->pushButton->setEnabled(false);
+        ui->warninglabel->setText(codec->toUnicode("사용 가능한 아이디입니다  "));
+        if(ui->CheckAgree->isChecked()) ui->SignupButton->setEnabled(true);
+    }
+
+    else
+    {
+        ui->warninglabel->setText(codec->toUnicode("사용할 수 없는 아이디입니다  "));
+    }
+}
+
+void SignupDialog::on_CheckAgree_clicked(bool checked)
+{
+    if(checked && able==true) ui->SignupButton->setEnabled(true);
+    else ui->SignupButton->setEnabled(false);
+}
+
+void SignupDialog::on_SignupButton_clicked()
+{
+    //전송 ui->inputID->text();
+    //ui->inputPassword->text();
+    ui->warninglabel->setText(codec->toUnicode("중복 확인 버튼을 눌러주세요  "));
+    ui->CheckAgree->setChecked(false);
+    ui->pushButton->setEnabled(true);
+    close();
+}
+
+void SignupDialog::on_pushButton_clicked()
+{
+    //전송    ui->inputID->text();
+}
+
+void SignupDialog::on_inputID_textChanged(const QString &arg1)
+{
+    able = false;
+    ui->warninglabel->setText(codec->toUnicode("중복확인버튼을 눌러주세요  "));
 }
 
 void SignupDialog::mousePressEvent(QMouseEvent *e)
@@ -754,22 +797,4 @@ void SignupDialog::on_Button_bar_clicked()
         ui->inputPassword->setText(ui->inputPassword->text().insert(cursorpos2, q[ui->Button_shift->isChecked()]));
         cursorpos2++;
     }
-}
-
-
-void SignupDialog::on_CheckAgree_clicked(bool checked)
-{
-    if(checked) ui->SignupButton->setEnabled(true);
-    else ui->SignupButton->setEnabled(false);
-}
-
-void SignupDialog::on_SignupButton_clicked()
-{
-    /*DB에서 정보 확인 후 가입여부 결정*/
-    int disable=0;
-
-    /*불가능한 경우*/
-    if(disable) ui->warninglabel->show();
-    //가능한 경우
-    else close();
 }

@@ -10,9 +10,9 @@ class PlayingDialog;
 class PlayingDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
-    explicit PlayingDialog(int idx, QWidget *parent = 0);
+    explicit PlayingDialog(char * id, QWidget *parent = 0);
     ~PlayingDialog();
 private slots:
 
