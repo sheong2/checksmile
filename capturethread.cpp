@@ -45,7 +45,7 @@ void CaptureThread::autocapture()
     if (count>9) str[10]=(count/10)%10+'0';
     if(count>99) str[9]=(count/100)%10+'0';
     if(count>999) str[8]=count/1000+'0';
-    //printf("count:%d\n",count);
+    printf("count:%d\n",count);
     count++;
     fflush(stdout);
     write(fd_pipe_stdin[1], str, strlen(str));

@@ -2,7 +2,7 @@
 #define PLAYINGDIALOG_H
 
 #include <QDialog>
-//#include "capturethread.h"
+
 namespace Ui {
 class PlayingDialog;
 }
@@ -28,7 +28,6 @@ private slots:
 
     void on_BTN_FF_clicked();
     void Display_Play_Menu(void);
-
 
 signals:
     void stopclicked();

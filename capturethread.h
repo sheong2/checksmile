@@ -9,9 +9,9 @@ class CaptureThread : public QThread
 public:
     explicit CaptureThread(QObject *parent = 0);
     volatile int count;
-    
+
 signals:
-    
+
 public slots:
 
 private slots:
@@ -29,7 +29,7 @@ private:
    int fd_pipe_stdout[2];
 
 
-    
+
 };
 
 #endif // CAPTURETHREAD_H

@@ -1,13 +1,12 @@
 #include "playingdialog.h"
 #include "mainwindow.h"
 #include "ui_playingdialog.h"
+#include "capturethread.h"
 #include <QFileDialog>
 #include <QString>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
-#include "filedelete.h"
-#include "capturethread.h"
 volatile int play_flag;
 volatile int pause_flag;
 volatile int end_flag;
@@ -28,8 +27,6 @@ PlayingDialog::PlayingDialog(char * id, QWidget *parent) :
     pause_flag=0;
     Display_Play_Menu();
 
-
-
     if(play_flag)return;
     play_flag=1;
     pid_temp=fork();
@@ -49,6 +46,7 @@ PlayingDialog::PlayingDialog(char * id, QWidget *parent) :
         sig_ret=signal(SIGCHLD,sigChldHandler);
         if(sig_ret==SIG_ERR)exit(-1);
     }
+
 }
 
 void PlayingDialog::Display_Play_Menu(void){
@@ -105,11 +103,6 @@ void PlayingDialog::on_BTN_Stop_clicked()
     write(fd_pipe[1], "q", 1);
     sleep(1);
     repaint();
-
-    //사진 전송 UDP!
-    //cam폴더 내의 사진들 전부 삭제 (전송 후)
-    FileDelete::removeDir("/mnt/nfs/cam"); //리턴값은? true면 삭제 성공 false면 실패
-
     close();
 }
 
@@ -125,7 +118,6 @@ void PlayingDialog::on_BTN_Down_clicked()
 
 void PlayingDialog::on_BTN_FF_clicked()
 {
-    emit ffclicked();
     write(fd_pipe[1], "+", 1);
     if(pause_flag){
         ui->BTN_Play->setIcon(QIcon(":/images/images/pause.png"));ui->BTN_Play->setIconSize(QSize(55,55));
@@ -136,7 +128,6 @@ void PlayingDialog::on_BTN_FF_clicked()
 
 void PlayingDialog::on_BTN_RW_clicked()
 {
-    emit rwclicked();
     write(fd_pipe[1], "-", 1);
     if(pause_flag){
         ui->BTN_Play->setIcon(QIcon(":/images/images/pause.png"));ui->BTN_Play->setIconSize(QSize(55,55));

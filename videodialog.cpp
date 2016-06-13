@@ -1,6 +1,7 @@
 #include "videodialog.h"
 #include "playingdialog.h"
 #include "ui_videodialog.h"
+#include "mainwindow.h"
 #include <qdir.h>
 #include <QImage>              //QImage를 사용하기 위한 라이브러리
 #include <QPixmap>
@@ -10,31 +11,41 @@
 #include <stdio.h>
 #include "mylineedit.h"
 #include <QMouseEvent>
-#include "capturethread.h"
+#include "rcvthread.h"
 #define lb(j) label_##j
 #define btn(j) pushButton_##j
 int PG;//현재페이지 (1,7,13 등등)
 int a;//서버에서 보낼 영상 개수
 int N;
 
-extern QString userid;
-
 VideoDialog::VideoDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::VideoDialog)
 {
+    printf("came Vddlg\n");
     ui->setupUi(this);
+    vidkeyboard = ui->keyboard;
     ui->verticalScrollBar->setMinimum(1);
     ui->dockWidget->hide();
-    ui->UserID->setText(userid);
+
+
     connect(ui->SearchLine, SIGNAL(pressed()), this, SLOT(got_sig_from_searchline()));
-    on_WatchingTab_clicked();
 }
 
 void VideoDialog::got_sig_from_searchline()
 {
-    ui->dockWidget->show();
-    cursor=ui->SearchLine->cursorPosition();
+    if(ui->dockWidget->isHidden()) ui->dockWidget->show();
+    vidkeyboard->setinputbox(ui->SearchLine, ui->SearchLine->cursorPosition());
+}
+
+void VideoDialog::init(QString id)
+{
+    printf("init viddlg\n");
+    tab = "W";
+    subtab = "R";
+    page = "001";
+    ui->UserID->setText(id);
+    send_data("w");
 }
 
 void VideoDialog::showlist()
@@ -48,6 +59,13 @@ void VideoDialog::showlist()
     ui->lb(5)->setText(name5);
     ui->lb(6)->setText(name6);
 
+    ui->LabelTime1->setText(time1);
+    ui->LabelTime2->setText(time2);
+    ui->LabelTime3->setText(time3);
+    ui->LabelTime4->setText(time4);
+    ui->LabelTime5->setText(time5);
+    ui->LabelTime6->setText(time6);
+
     if (id1[0])
     {
        title[25]=id1[0];
@@ -55,11 +73,14 @@ void VideoDialog::showlist()
        title[27]=id1[2];
        ui->btn(1)->setIcon(QIcon(title));
        ui->btn(1)->setIconSize( QSize(213,160) );
+       ui->btn(1)->show();
+       ui->lb(1)->show();
     }
     else
     {
-        ui->btn(1)->setVisible(false);
-        ui->lb(1)->setVisible(false);
+        ui->btn(1)->hide();
+        ui->LabelTime1->setText(NULL);
+        ui->lb(1)->setText(NULL);
 
     }
     if (id2[0])
@@ -69,11 +90,14 @@ void VideoDialog::showlist()
         title[27]=id2[2];
         ui->btn(2)->setIcon(QIcon(title));
         ui->btn(2)->setIconSize( QSize(213,160) );
+        ui->btn(2)->show();
+        ui->lb(2)->show();
     }
     else
     {
-        ui->btn(2)->setVisible(false);
-        ui->lb(2)->setVisible(false);
+        ui->btn(2)->hide();
+        ui->LabelTime2->setText(NULL);
+        ui->lb(2)->setText(NULL);
 
     }
     if (id3[0])
@@ -82,11 +106,15 @@ void VideoDialog::showlist()
         title[26]=id3[1];
         title[27]=id3[2];
        ui->btn(3)->setIcon(QIcon(title));
-       ui->btn(3)->setIconSize( QSize(213,160) );}
+       ui->btn(3)->setIconSize( QSize(213,160) );
+       ui->btn(3)->show();
+       ui->lb(3)->show();
+    }
     else
     {
-        ui->btn(3)->setVisible(false);
-        ui->lb(3)->setVisible(false);
+        ui->btn(3)->hide();
+        ui->LabelTime3->setText(NULL);
+        ui->lb(3)->setText(NULL);
 
     }
     if (id4[0])
@@ -95,11 +123,15 @@ void VideoDialog::showlist()
         title[26]=id4[1];
         title[27]=id4[2];
        ui->btn(4)->setIcon(QIcon(title));
-       ui->btn(4)->setIconSize( QSize(213,160) );}
+       ui->btn(4)->setIconSize( QSize(213,160) );
+       ui->btn(4)->show();
+       ui->lb(4)->show();
+    }
     else
     {
-        ui->btn(4)->setVisible(false);
-        ui->lb(4)->setVisible(false);
+        ui->btn(4)->hide();
+        ui->LabelTime4->setText(NULL);
+        ui->lb(4)->setText(NULL);
 
     }
     if (id5[0])
@@ -108,12 +140,15 @@ void VideoDialog::showlist()
         title[26]=id5[1];
         title[27]=id5[2];
        ui->btn(5)->setIcon(QIcon(title));
-       ui->btn(5)->setIconSize( QSize(213,160) );}
+       ui->btn(5)->setIconSize( QSize(213,160) );
+       ui->btn(5)->show();
+       ui->lb(5)->show();
+    }
     else
     {
-        ui->btn(5)->setVisible(false);
-        ui->lb(5)->setVisible(false);
-
+        ui->btn(5)->hide();
+        ui->LabelTime5->setText(NULL);
+        ui->lb(5)->setText(NULL);
     }
     if (id6[0])
    {
@@ -121,17 +156,21 @@ void VideoDialog::showlist()
         title[26]=id6[1];
         title[27]=id6[2];
        ui->btn(6)->setIcon(QIcon(title));
-       ui->btn(6)->setIconSize( QSize(213,160) );}
+       ui->btn(6)->setIconSize( QSize(213,160) );
+       ui->btn(6)->show();
+       ui->lb(6)->show();
+    }
     else
     {
-        ui->btn(6)->setVisible(false);
-        ui->lb(6)->setVisible(false);
-
+        ui->btn(6)->hide();
+        ui->LabelTime6->setText(NULL);
+        ui->lb(6)->setText(NULL);
     }
 }
 
 VideoDialog::~VideoDialog()
 {
+    printf("bye viddlg\n");
     delete ui;
 }
 
@@ -139,7 +178,13 @@ void VideoDialog::on_pushButton_1_clicked()
 {
     cam = new CaptureThread;
     cam->start();
-    PlayingDialog dlg(id1);
+
+    QByteArray datagram;
+    datagram.append("P").append(id1);
+    printf("%s\n", datagram.data());
+    send_data(datagram);
+
+    PlayingDialog dlg(id1.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -148,14 +193,20 @@ void VideoDialog::on_pushButton_1_clicked()
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
     cam->quit();
-    //cam->terminate();
+    send_data("fend");
 }
 
 void VideoDialog::on_pushButton_2_clicked()
 {
     cam = new CaptureThread;
     cam->start();
-    PlayingDialog dlg(id2);
+
+    QByteArray datagram;
+    datagram.append("P").append(id2);
+    printf("%s\n", datagram.data());
+    send_data(datagram);
+
+    PlayingDialog dlg(id2.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -164,13 +215,20 @@ void VideoDialog::on_pushButton_2_clicked()
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
     cam->quit();
+    send_data("fend");
 }
 
 void VideoDialog::on_pushButton_3_clicked()
 {
     cam = new CaptureThread;
     cam->start();
-    PlayingDialog dlg(id3);
+
+    QByteArray datagram;
+    datagram.append("P").append(id3);
+    printf("%s\n", datagram.data());
+    send_data(datagram);
+
+    PlayingDialog dlg(id3.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -179,13 +237,20 @@ void VideoDialog::on_pushButton_3_clicked()
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
     cam->quit();
+    send_data("fend");
 }
 
 void VideoDialog::on_pushButton_4_clicked()
 {
     cam = new CaptureThread;
     cam->start();
-    PlayingDialog dlg(id4);
+
+    QByteArray datagram;
+    datagram.append("P").append(id4);
+    printf("%s\n", datagram.data());
+    send_data(datagram);
+
+    PlayingDialog dlg(id4.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -194,13 +259,20 @@ void VideoDialog::on_pushButton_4_clicked()
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
     cam->quit();
+    send_data("fend");
 }
 
 void VideoDialog::on_pushButton_5_clicked()
 {
     cam = new CaptureThread;
     cam->start();
-    PlayingDialog dlg(id5);
+
+    QByteArray datagram;
+    datagram.append("P").append(id5);
+    printf("%s\n", datagram.data());
+    send_data(datagram);
+
+    PlayingDialog dlg(id5.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -209,13 +281,20 @@ void VideoDialog::on_pushButton_5_clicked()
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
     cam->quit();
+    send_data("fend");
 }
 
 void VideoDialog::on_pushButton_6_clicked()
 {
     cam = new CaptureThread;
     cam->start();
-    PlayingDialog dlg(id6);
+
+    QByteArray datagram;
+    datagram.append("P").append(id6);
+    printf("%s\n", datagram.data());
+    send_data(datagram);
+
+    PlayingDialog dlg(id6.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -224,25 +303,90 @@ void VideoDialog::on_pushButton_6_clicked()
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
     cam->quit();
+    send_data("fend");
+}
+
+void VideoDialog::set_tab(int maxpage)
+{
+    ui->verticalScrollBar->setMaximum(maxpage);
+    ui->verticalScrollBar->setSliderPosition(1);
+
+    on_verticalScrollBar_sliderReleased();
+}
+
+void VideoDialog::on_subtab1_clicked()
+{
+    if(ui->WatchingTab->isChecked()) on_recentTab_clicked();
+    else if(ui->HistoryTab->isChecked()) on_HistoryTab_clicked();
+}
+
+void VideoDialog::on_subtab2_clicked()
+{
+    if(ui->WatchingTab->isChecked()) on_bookmarkTab_clicked();
+    else if(ui->HistoryTab->isChecked()) on_AlreadyTab_clicked();
+}
+
+void VideoDialog::on_subtab3_clicked()
+{
+    on_viewTab_clicked();
+}
+
+void VideoDialog::on_recentTab_clicked()
+{
+    ui->subtab1->setChecked(true);
+    ui->subtab2->setChecked(false);
+    ui->subtab3->setChecked(false);
+    ui->verticalScrollBar->setSliderPosition(1);
+    subtab = "R";
+
+    on_verticalScrollBar_sliderReleased();
+}
+
+void VideoDialog::on_bookmarkTab_clicked()
+{
+    ui->subtab1->setChecked(false);
+    ui->subtab2->setChecked(true);
+    ui->subtab3->setChecked(false);
+    ui->verticalScrollBar->setSliderPosition(1);
+    subtab = "B";
+
+    on_verticalScrollBar_sliderReleased();
+}
+
+void VideoDialog::on_viewTab_clicked()
+{
+    ui->subtab1->setChecked(false);
+    ui->subtab2->setChecked(false);
+    ui->subtab3->setChecked(true);
+    ui->verticalScrollBar->setSliderPosition(1);
+    subtab = "V";
+
+    on_verticalScrollBar_sliderReleased();
 }
 
 void VideoDialog::on_WatchingTab_clicked()
 {
-    //udp 통신으로 "WR001" 보내기
-    //udp 통신으로 전체 페이지 갯수, 6개 ID, 제목 6개 받아오기
-
-    maxpage = 5;//char 배열 바꾸기
-    readydata();
-
-    ui->verticalScrollBar->setMaximum(maxpage);
-    ui->verticalScrollBar->setSliderPosition(1);
-
-    PG=1;
-    showlist();
-
+    printf("watching tab\n");
     ui->HistoryTab->setChecked(false);
     ui->SuggestTab->setChecked(false);
     ui->WatchingTab->setChecked(true);
+
+    ui->subtab1->show();
+    ui->subtab2->show();
+    ui->subtab3->show();
+
+    ui->subtab1->setChecked(true);
+    ui->subtab2->setChecked(false);
+    ui->subtab3->setChecked(false);
+
+    ui->subtab1->setText("recent");
+    ui->subtab2->setText("bookmark");
+    ui->subtab3->setText("view");
+
+    tab = "W";
+    subtab = "R";
+
+    send_data("w");
 }
 
 void VideoDialog::on_HistoryTab_clicked()
@@ -250,6 +394,43 @@ void VideoDialog::on_HistoryTab_clicked()
     ui->WatchingTab->setChecked(false);
     ui->SuggestTab->setChecked(false);
     ui->HistoryTab->setChecked(true);
+
+    ui->subtab1->show();
+    ui->subtab2->show();
+    ui->subtab3->hide();
+
+    ui->subtab1->setChecked(true);
+    ui->subtab2->setChecked(false);
+
+    ui->subtab1->setText("bookmark");
+    ui->subtab2->setText("video");
+
+    tab = "H";
+    subtab.clear();
+
+    send_data("h");
+}
+
+void VideoDialog::on_AlreadyTab_clicked()
+{
+    ui->WatchingTab->setChecked(false);
+    ui->SuggestTab->setChecked(false);
+    ui->HistoryTab->setChecked(true);
+
+    ui->subtab1->show();
+    ui->subtab2->show();
+    ui->subtab3->hide();
+
+    ui->subtab1->setChecked(false);
+    ui->subtab2->setChecked(true);
+
+    ui->subtab1->setText("bookmark");
+    ui->subtab2->setText("video");
+
+    tab = "A";
+    subtab.clear();
+
+    send_data("a");
 }
 
 void VideoDialog::on_SuggestTab_clicked()
@@ -257,32 +438,92 @@ void VideoDialog::on_SuggestTab_clicked()
     ui->WatchingTab->setChecked(false);
     ui->HistoryTab->setChecked(false);
     ui->SuggestTab->setChecked(true);
+
+    ui->subtab1->hide();
+    ui->subtab2->hide();
+    ui->subtab3->hide();
+
+    tab = "S";
+    subtab.clear();
+
+    send_data("s");
 }
 
 void VideoDialog::on_verticalScrollBar_sliderReleased()
 {
-    PG = ui->verticalScrollBar->sliderPosition();
-    //영상 id 요청 영상 id 6개 받아서 썸네일 출력
-    readydata();
-    showlist();
+    QByteArray datagram;
+
+   page = QByteArray::number(ui->verticalScrollBar->sliderPosition());
+   page.prepend("000");
+   page = page.right(3);
+
+    datagram.append(tab).append(subtab).append(page);
+
+    send_data(datagram);
+    //udp : 현재탭, 기준, 페이지 전송
 }
 
-void VideoDialog::readydata()
+void VideoDialog::readydata(QByteArray datagram)
 {
-    id1[0] = id2[0] = id3[0] = id4[0] = id5[0] = id6[0] = '0';
-    id1[1] = id2[1] = id3[1] = id4[1] = id5[1] = id6[1] = '0';
-    id1[2] = '1';
-    id2[2] = '2';
-    id3[2] = '3';
-    id4[2] = '4';
-    id5[2] = '5';
-    id6[2] = '6';
-    name1 = "happyTogether";
-    name2 = "runningman";
-    name3 = "joseho";
-    name4 = "1bak2il";
-    name5 = "happyTogether2";
-    name6 = "Comedy";
+    int find;
+    int cnt = datagram.count('@');
+    printf("cnt : %d\n", cnt);
+
+    id1 = id2 = id3 = id4 = id5 = id6 = NULL;
+
+    if(cnt>=1) id1 = datagram.mid(1, 3);
+    if(cnt>=2) id2 = datagram.mid(4, 3);
+    if(cnt>=3) id3 = datagram.mid(7, 3);
+    if(cnt>=4) id4 = datagram.mid(10, 3);
+    if(cnt>=5) id5 = datagram.mid(13, 3);
+    if(cnt>=6) id6 = datagram.mid(16, 3);
+
+    if(cnt>=1) time1 = datagram.mid(19, 4).insert(2, ':');
+    if(cnt>=2) time2 = datagram.mid(23, 4).insert(2, ':');
+    if(cnt>=3) time3 = datagram.mid(27, 4).insert(2, ':');
+    if(cnt>=4) time4 = datagram.mid(31, 4).insert(2, ':');
+    if(cnt>=5) time5 = datagram.mid(35, 4).insert(2, ':');
+    if(cnt>=6) time6 = datagram.mid(39, 4).insert(2, ':');
+
+    datagram = datagram.mid(43);
+    if(cnt>=1)
+    {
+        find = datagram.indexOf('@', 0);
+        name1 = datagram.left(find);
+        datagram = datagram.mid(find+1);
+    }
+    if(cnt>=2)
+    {
+        find = datagram.indexOf('@', 0);
+        name2 =  datagram.left(find);
+        datagram = datagram.mid(find+1);
+    }
+    if(cnt>=3)
+    {
+        find = datagram.indexOf('@', 0);
+        name3 =  datagram.left(find);
+        datagram = datagram.mid(find+1);
+    }
+    if(cnt>=4)
+    {
+        find = datagram.indexOf('@', 0);
+        name4 =  datagram.left(find);
+        datagram = datagram.mid(find+1);
+    }
+    if(cnt>=5)
+    {
+        find = datagram.indexOf('@', 0);
+        name5 =  datagram.left(find);
+        datagram = datagram.mid(find+1);
+    }
+    if(cnt>=6)
+    {
+        find = datagram.indexOf('@', 0);
+        name6 =  datagram.left(find);
+        datagram = datagram.mid(find+1);
+    }
+
+    showlist();
 }
 
 void VideoDialog::mousePressEvent(QMouseEvent *e)
@@ -290,363 +531,16 @@ void VideoDialog::mousePressEvent(QMouseEvent *e)
     ui->dockWidget->hide();
 }
 
-void VideoDialog::on_Button_HIDE_clicked()
-{
-    ui->dockWidget->hide();
-}
-
-void VideoDialog::on_Button_Q_clicked()
-{
-    char q[2] = {'q', 'Q'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-     cursor++;
-}
-
-void VideoDialog::on_Button_W_clicked()
-{
-    char q[2] = {'w', 'W'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_RESET_clicked()
-{
-    ui->SearchLine->text().clear();
-    ui->SearchLine->setText(NULL);
-    cursor=0;
-}
-
-void VideoDialog::on_Button_E_clicked()
-{
-    char q[2] = {'e', 'E'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-    cursor++;
-}
-
-void VideoDialog::on_Button_R_clicked()
-{
-    char q[2] = {'r', 'R'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-    cursor++;
-}
-
-void VideoDialog::on_Button_T_clicked()
-{
-    char q[2] = {'t', 'T'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-    cursor++;
-}
-
-void VideoDialog::on_Button_Y_clicked()
-{
-    char q[2] = {'y', 'Y'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_U_clicked()
-{
-    char q[2] = {'u', 'U'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_I_clicked()
-{
-    char q[2] = {'i', 'i'};
- ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_O_clicked()
-{
-    char q[2] = {'o', 'O'};
-ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_P_clicked()
-{
-    char q[2] = {'p', 'P'};
- ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_Z_clicked()
-{
-    char q[2] = {'z', 'Z'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_X_clicked()
-{
-    char q[2] = {'x', 'X'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_C_clicked()
-{
-    char q[2] = {'c', 'C'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_V_clicked()
-{
-    char q[2] = {'v', 'V'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_B_clicked()
-{
-    char q[2] = {'b', 'B'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_N_clicked()
-{
-    char q[2] = {'n', 'N'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_M_clicked()
-{
-    char q[2] = {'m', 'M'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_DOT_clicked()
-{
-    char q[2] = {'.', ','};
-
-   ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_question_clicked()
-{
-    char q[2] = {'?', '!'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-
-void VideoDialog::on_Button_spacebar_clicked()
-{
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,' '));
-        cursor++;
-}
-
-void VideoDialog::on_Button_enter_clicked()
-{
-    ui->dockWidget->hide();
-}
-
-void VideoDialog::on_Button_del_clicked()
-{
-     ui->SearchLine->setText(ui->SearchLine->text().remove(--cursor, 1));
-}
-
-void VideoDialog::on_Button_A_clicked()
-{
-    char q[2] = {'q', 'Q'};
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_S_clicked()
-{
-    char q[2] = {'s', 'S'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_D_clicked()
-{
-    char q[2] = {'d', 'D'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_F_clicked()
-{
-    char q[2] = {'f', 'F'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_G_clicked()
-{
-    char q[2] = {'g', 'G'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_H_clicked()
-{
-    char q[2] = {'h', 'H'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_J_clicked()
-{
-    char q[2] = {'j', 'J'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_K_clicked()
-{
-    char q[2] = {'k', 'K'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_L_clicked()
-{
-    char q[2] = {'l', 'L'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_1_clicked()
-{
-    char q[2] = {'1', '1'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_2_clicked()
-{
-    char q[2] = {'2', '2'};
-
-   ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_3_clicked()
-{
-    char q[2] = {'3', '3'};
-
-   ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_4_clicked()
-{
-    char q[2] = {'4', '4'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_5_clicked()
-{
-    char q[2] = {'5', '5'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-}
-
-void VideoDialog::on_Button_6_clicked()
-{
-    char q[2] = {'6', '6'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_7_clicked()
-{
-    char q[2] = {'7', '7'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_8_clicked()
-{
-    char q[2] = {'8', '8'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_9_clicked()
-{
-    char q[2] = {'9', '9'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_0_clicked()
-{
-    char q[2] = {'0', '0'};
-
-    ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
-void VideoDialog::on_Button_bar_clicked()
-{
-    char q[2] = {'-', '_'};
-
-     ui->SearchLine->setText(ui->SearchLine->text().insert(cursor,q[ui->Button_shift->isChecked()]));
-        cursor++;
-
-}
-
 void VideoDialog::on_logoutButton_clicked()
 {
     close();
+}
+
+void VideoDialog::on_SearchButton_clicked()
+{
+    QByteArray datagram;
+    datagram.append('Q').append(tab).append(page).append(ui->SearchLine->text());
+    send_data(datagram);
+
+    ui->SearchLine->setText(NULL);
 }

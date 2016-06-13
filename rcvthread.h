@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QUdpSocket>
+#include <QTimer>
 
 class rcvThread : public QThread
 {
@@ -13,13 +14,16 @@ public:
 signals:
    void login_result(bool);
    void dup_id_result(bool);
+   void readydata(QByteArray datagram);
+   void set_tab(int maxpage);
+
 
 public slots:
     void read_data();
+    void send_data(QByteArray datagram);
 
 private:
     QUdpSocket * socket;
-
 };
 
 #endif // RCVTHREAD_H

@@ -19,8 +19,8 @@ SOURCES += main.cpp\
     videodialog.cpp \
     playingdialog.cpp \
     rcvthread.cpp \
-    capturethread.cpp \
-    filedelete.cpp
+    wkeyboard.cpp \
+    capturethread.cpp
 
 HEADERS  += mainwindow.h \
     mylineedit.h \
@@ -28,13 +28,14 @@ HEADERS  += mainwindow.h \
     videodialog.h \
     playingdialog.h \
     rcvthread.h \
-    capturethread.h \
-    filedelete.h
+    wkeyboard.h \
+    capturethread.h
 
 FORMS    += mainwindow.ui \
     signupdialog.ui \
     videodialog.ui \
-    playingdialog.ui
+    playingdialog.ui \
+    wkeyboard.ui
 
 RESOURCES += \
     BASIC.qrc

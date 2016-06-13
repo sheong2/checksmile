@@ -2,6 +2,7 @@
 #define MYLINEEDIT_H
 
 #include <QLineEdit>
+#include <QMouseEvent>
 
 class MyLineEdit : public QLineEdit
 {
@@ -12,7 +13,7 @@ public:
     ~MyLineEdit();
 
 signals:
-  void pressed(void);
+  void pressed();
 
 protected:
   virtual void mousePressEvent(QMouseEvent *e);
