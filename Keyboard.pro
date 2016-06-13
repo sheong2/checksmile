@@ -17,13 +17,19 @@ SOURCES += main.cpp\
     mylineedit.cpp \
     signupdialog.cpp \
     videodialog.cpp \
-    playingdialog.cpp
+    playingdialog.cpp \
+    rcvthread.cpp \
+    capturethread.cpp \
+    filedelete.cpp
 
 HEADERS  += mainwindow.h \
     mylineedit.h \
     signupdialog.h \
     videodialog.h \
-    playingdialog.h
+    playingdialog.h \
+    rcvthread.h \
+    capturethread.h \
+    filedelete.h
 
 FORMS    += mainwindow.ui \
     signupdialog.ui \

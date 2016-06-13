@@ -68,16 +68,45 @@
     </item>
     <item row="2" column="1">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
-       <widget class="QLabel" name="Label_password">
+      <item row="1" column="3">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="Label_id">
         <property name="styleSheet">
          <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
         </property>
         <property name="text">
-         <string>Password</string>
+         <string>ID</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="MyLineEdit" name="inputID">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -93,6 +122,19 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="Label_password">
+        <property name="styleSheet">
+         <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Password</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="1" column="2">
        <widget class="MyLineEdit" name="inputPassword">
@@ -116,42 +158,13 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="MyLineEdit" name="inputID">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLabel" name="warning">
         <property name="styleSheet">
-         <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+         <string notr="true">color: rgb(207, 0, 3);</string>
         </property>
         <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="Label_id">
-        <property name="styleSheet">
-         <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
-        </property>
-        <property name="text">
-         <string>ID</string>
+         <string>아이디와 패스워드를 다시 입력해주세요</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

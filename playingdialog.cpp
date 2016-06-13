@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include "filedelete.h"
+#include "capturethread.h"
 volatile int play_flag;
 volatile int pause_flag;
 volatile int end_flag;
@@ -13,11 +15,11 @@ void sigChldHandler(int signal);
 void Display_Play_Menu(void);
 char cmd[256];
 //제목 넣는 것 바꾸기
-char * title[6]={"/mnt/nfs/test_contents/vid0.avi", "/mnt/nfs/test_contents/vid1.avi", "/mnt/nfs/test_contents/vid2.avi", "/mnt/nfs/test_contents/vid3.avi", "/mnt/nfs/test_contents/vid4.avi", "/mnt/nfs/test_contents/vid5.avi"};
+char title[]="/mnt/nfs/test_contents/vid000.avi";
 
 
 pid_t pid_temp;
-PlayingDialog::PlayingDialog(int idx, QWidget *parent) :
+PlayingDialog::PlayingDialog(char * id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PlayingDialog)
 {
@@ -25,6 +27,8 @@ PlayingDialog::PlayingDialog(int idx, QWidget *parent) :
     if(pipe(fd_pipe)==-1)close();
     pause_flag=0;
     Display_Play_Menu();
+
+
 
     if(play_flag)return;
     play_flag=1;
@@ -35,8 +39,11 @@ PlayingDialog::PlayingDialog(int idx, QWidget *parent) :
         dup(fd_pipe[0]);
         ::close(fd_pipe[0]);
         ::close(fd_pipe[1]);
-        strcpy(cmd,title[idx]);
-        execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",cmd,NULL);
+        title[26]=id[0];
+        title[27]=id[1];
+        title[28]=id[2];
+
+        execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
     }else{
         sighandler_t sig_ret;
         sig_ret=signal(SIGCHLD,sigChldHandler);
@@ -77,7 +84,7 @@ void PlayingDialog::on_BTN_Play_clicked()
             dup(fd_pipe[0]);
             ::close(fd_pipe[0]);
             ::close(fd_pipe[1]);
-            execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",cmd,NULL);
+            execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
         }else{
             sighandler_t sig_ret;
             sig_ret=signal(SIGCHLD,sigChldHandler);
@@ -86,23 +93,29 @@ void PlayingDialog::on_BTN_Play_clicked()
     }
     else {
         write(fd_pipe[1],"p",1);
-        if(pause_flag^=1){ui->BTN_Play->setIcon(QIcon(":/images/images/play.png"));ui->BTN_Play->setIconSize(QSize(55,55));}
-        else {ui->BTN_Play->setIcon(QIcon(":/images/images/pause.png"));ui->BTN_Play->setIconSize(QSize(45,45));}
+        if(pause_flag^=1){emit pauseclicked();ui->BTN_Play->setIcon(QIcon(":/images/images/play.png"));ui->BTN_Play->setIconSize(QSize(55,55));}
+        else {emit playclicked();ui->BTN_Play->setIcon(QIcon(":/images/images/pause.png"));ui->BTN_Play->setIconSize(QSize(45,45));}
     }
 }
 
 void PlayingDialog::on_BTN_Stop_clicked()
 {
     play_flag=0;
+    emit stopclicked();
     write(fd_pipe[1], "q", 1);
     sleep(1);
     repaint();
+
+    //사진 전송 UDP!
+    //cam폴더 내의 사진들 전부 삭제 (전송 후)
+    FileDelete::removeDir("/mnt/nfs/cam"); //리턴값은? true면 삭제 성공 false면 실패
+
     close();
 }
 
 void PlayingDialog::on_BTN_UP_clicked()
 {
-    write(fd_pipe[1], "0", 1);
+    write(fd_pipe[1], "o", 1);
 }
 
 void PlayingDialog::on_BTN_Down_clicked()
@@ -112,6 +125,7 @@ void PlayingDialog::on_BTN_Down_clicked()
 
 void PlayingDialog::on_BTN_FF_clicked()
 {
+    emit ffclicked();
     write(fd_pipe[1], "+", 1);
     if(pause_flag){
         ui->BTN_Play->setIcon(QIcon(":/images/images/pause.png"));ui->BTN_Play->setIconSize(QSize(55,55));
@@ -122,6 +136,7 @@ void PlayingDialog::on_BTN_FF_clicked()
 
 void PlayingDialog::on_BTN_RW_clicked()
 {
+    emit rwclicked();
     write(fd_pipe[1], "-", 1);
     if(pause_flag){
         ui->BTN_Play->setIcon(QIcon(":/images/images/pause.png"));ui->BTN_Play->setIconSize(QSize(55,55));
