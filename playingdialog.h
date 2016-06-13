@@ -10,9 +10,9 @@ class PlayingDialog;
 class PlayingDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
-    explicit PlayingDialog(int idx, QWidget *parent = 0);
+    explicit PlayingDialog(char * id, QWidget *parent = 0);
     ~PlayingDialog();
 private slots:
 
@@ -29,7 +29,12 @@ private slots:
     void on_BTN_FF_clicked();
     void Display_Play_Menu(void);
 
-
+signals:
+    void stopclicked();
+    void pauseclicked();
+    void playclicked();
+    void ffclicked();
+    void rwclicked();
 
 private:
     Ui::PlayingDialog *ui;

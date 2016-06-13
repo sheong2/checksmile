@@ -8,5 +8,12 @@
         <file>images/rw.png</file>
         <file>images/up.png</file>
         <file>images/stop.png</file>
+        <file>images/watching.png</file>
+        <file>images/history_normal.png</file>
+        <file>images/history.png</file>
+        <file>images/suggest_normal.png</file>
+        <file>images/suggest.png</file>
+        <file>images/watching_normal.png</file>
+        <file>images/exit.png</file>
     </qresource>
 </RCC>

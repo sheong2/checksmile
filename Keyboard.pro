@@ -17,18 +17,25 @@ SOURCES += main.cpp\
     mylineedit.cpp \
     signupdialog.cpp \
     videodialog.cpp \
-    playingdialog.cpp
+    playingdialog.cpp \
+    rcvthread.cpp \
+    wkeyboard.cpp \
+    capturethread.cpp
 
 HEADERS  += mainwindow.h \
     mylineedit.h \
     signupdialog.h \
     videodialog.h \
-    playingdialog.h
+    playingdialog.h \
+    rcvthread.h \
+    wkeyboard.h \
+    capturethread.h
 
 FORMS    += mainwindow.ui \
     signupdialog.ui \
     videodialog.ui \
-    playingdialog.ui
+    playingdialog.ui \
+    wkeyboard.ui
 
 RESOURCES += \
     BASIC.qrc
