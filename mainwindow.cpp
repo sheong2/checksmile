@@ -6,7 +6,7 @@
 #include <QMouseEvent>
 #include <stdio.h>
 #include "signupdialog.h"
-#include "videodialog.h"
+#include "capturethread.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     printf("before connect\n");
     connect(ui->inputID, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_id(void)));
     connect(ui->inputPassword, SIGNAL(pressed()), this, SLOT(got_focus_sig_from_pw(void)));
+    connect(&viddlg, SIGNAL(connect_cam_rcv()), this, SLOT(connect_cam_rcv()));
 
     connect(this, SIGNAL(init_viddlg(QString)), &viddlg, SLOT(init(QString)));
 
@@ -37,8 +38,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    rcvthread->exit();
+    delete rcvthread;
     delete ui;
+}
+
+void MainWindow::connect_cam_rcv()
+{
+    printf("connect_cam_rcv\n");
+    connect(rcvthread, SIGNAL(auto_capture()), viddlg.getcamthread(), SLOT(autocapture()));
 }
 
 void MainWindow::init_udp()

@@ -1,12 +1,11 @@
 #include "capturethread.h"
-#include <QTimer>
 #include <stdio.h>
 
-CaptureThread::CaptureThread(QObject *parent) :
+CaptureThread::CaptureThread(QByteArray start_time, QObject *parent) :
     QThread(parent)
 {
-    time = new QTimer;
-    connect(time,SIGNAL(timeout()),this,SLOT(autocapture()));
+    timer = new QElapsedTimer;
+    starttime=start_time.mid(0, 2).toInt()*60 + start_time.mid(3, 2).toInt();
 
     pid_t pid_temp;
     if(pipe(fd_pipe_stdin) == -1) exit(-1);
@@ -26,13 +25,11 @@ CaptureThread::CaptureThread(QObject *parent) :
         ::close(fd_pipe_stdout[1]);
         ::close(fd_pipe_stdout[0]);
 
-        execlp("./v4l2test","v4l2test","-d","/dev/video1","-c","700000", "-a","1",NULL);
-
+        execlp("./v4l2test","v4l2test","-d","/dev/video1","-c","700000","-a","1",NULL);
     }
     else
     {
-        time->start(500);
-        count=0;
+        timer->start();
         ::close(fd_pipe_stdin[0]);
         ::close(fd_pipe_stdout[1]);
     }
@@ -40,13 +37,16 @@ CaptureThread::CaptureThread(QObject *parent) :
 
 void CaptureThread::autocapture()
 {
+    sleep(3);
+    qint64 count;
+    count = timer->elapsed()/1000 + starttime +offset;
+    offset=0;
     char str[15]="c ./cam/0000\n";
     str[11]=count%10+'0';
     if (count>9) str[10]=(count/10)%10+'0';
     if(count>99) str[9]=(count/100)%10+'0';
     if(count>999) str[8]=count/1000+'0';
-    printf("count:%d\n",count);
-    count++;
+
     fflush(stdout);
     write(fd_pipe_stdin[1], str, strlen(str));
     fflush(stdout);
@@ -54,24 +54,23 @@ void CaptureThread::autocapture()
 }
 void CaptureThread::stopcapture()
 {
-    time->stop();
     write(fd_pipe_stdin[1],"e\n",2);
+    delete timer;
 }
 void CaptureThread::pausecapture()
 {
-    time->stop();
+    timer->invalidate();
 }
 void CaptureThread::resumecapture()
 {
-    time->start(500);
+    timer->restart();
 }
 void CaptureThread::ffpressed()
 {
-    count+=5;
-    time->start(500);
+    offset += 5;
+    if(!(timer->isValid())) timer->restart();
 }
 void CaptureThread::rwpressed()
 {
-    count-=5;
-    time->start(500);
+    offset += -5;
 }

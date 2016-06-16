@@ -48,7 +48,14 @@
          </sizepolicy>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+         <string notr="true">font: 12pt &quot;Sans Serif&quot;;
+background-color: white;
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 5em;
+padding: 6px;</string>
         </property>
         <property name="text">
          <string>SIGN UP</string>
@@ -65,12 +72,19 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>111</width>
           <height>0</height>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+         <string notr="true">font: 12pt &quot;Sans Serif&quot;;
+background-color: white;
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: beige;
+min-width: 5em;
+padding: 6px;</string>
         </property>
         <property name="text">
          <string>LOG IN</string>
@@ -308,16 +322,6 @@
    <zorder>verticalSpacer</zorder>
    <zorder>verticalSpacer_2</zorder>
    <zorder>verticalSpacer_3</zorder>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1024</width>
-     <height>23</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

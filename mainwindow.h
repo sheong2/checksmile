@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
-
+    rcvThread * getrcvthread(){return rcvthread;}
     ~MainWindow();
 
 public slots:
@@ -32,6 +32,7 @@ signals:
     void init_viddlg(QString id);
     void send_data(QByteArray datagram);
     void changeinputbox();
+    void fin();
 
 private slots:
     //초기화
@@ -46,12 +47,14 @@ private slots:
     void got_focus_sig_from_id();
     void got_focus_sig_from_pw();
 
+    void connect_cam_rcv();
+
 private:
     QTextCodec *codec;
     Ui::MainWindow *ui;
     rcvThread *rcvthread;
-    SignupDialog signdlg;
     VideoDialog viddlg;
+    SignupDialog signdlg;
 
     WKeyboard * Keyboard;
 

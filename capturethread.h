@@ -2,13 +2,13 @@
 #define CAPTURETHREAD_H
 #include "playingdialog.h"
 #include <QThread>
-#include <QTimer>
+#include <QElapsedTimer>
 class CaptureThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit CaptureThread(QObject *parent = 0);
-    volatile int count;
+    explicit CaptureThread(QByteArray time, QObject *parent = 0);
+
 
 signals:
 
@@ -23,12 +23,13 @@ private slots:
     void rwpressed();
 
 private:
-   QTimer * time;
+   QElapsedTimer * timer;
    PlayingDialog * play;
    int fd_pipe_stdin[2];
    int fd_pipe_stdout[2];
 
-
+   volatile int starttime;
+   volatile int offset;
 
 };
 

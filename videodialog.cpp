@@ -14,9 +14,6 @@
 #include "rcvthread.h"
 #define lb(j) label_##j
 #define btn(j) pushButton_##j
-int PG;//현재페이지 (1,7,13 등등)
-int a;//서버에서 보낼 영상 개수
-int N;
 
 VideoDialog::VideoDialog(QWidget *parent) :
     QDialog(parent),
@@ -26,9 +23,6 @@ VideoDialog::VideoDialog(QWidget *parent) :
     ui->setupUi(this);
     vidkeyboard = ui->keyboard;
     ui->verticalScrollBar->setMinimum(1);
-    ui->dockWidget->hide();
-
-
     connect(ui->SearchLine, SIGNAL(pressed()), this, SLOT(got_sig_from_searchline()));
 }
 
@@ -41,11 +35,9 @@ void VideoDialog::got_sig_from_searchline()
 void VideoDialog::init(QString id)
 {
     printf("init viddlg\n");
-    tab = "W";
-    subtab = "R";
-    page = "001";
+    ui->dockWidget->hide();
     ui->UserID->setText(id);
-    send_data("w");
+    on_WatchingTab_clicked();
 }
 
 void VideoDialog::showlist()
@@ -176,15 +168,19 @@ VideoDialog::~VideoDialog()
 
 void VideoDialog::on_pushButton_1_clicked()
 {
-    cam = new CaptureThread;
+    cam = new CaptureThread(time1);
+    if(connected==false)
+    {
+        emit connect_cam_rcv();
+        connected = true;
+    }
     cam->start();
-
     QByteArray datagram;
     datagram.append("P").append(id1);
     printf("%s\n", datagram.data());
     send_data(datagram);
 
-    PlayingDialog dlg(id1.data());
+    PlayingDialog dlg(id1.data(), time1.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -192,13 +188,17 @@ void VideoDialog::on_pushButton_1_clicked()
     connect(&dlg,SIGNAL(rwclicked()),cam,SLOT(rwpressed()));
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
-    cam->quit();
-    send_data("fend");
+    delete cam;
 }
 
 void VideoDialog::on_pushButton_2_clicked()
 {
-    cam = new CaptureThread;
+    cam = new CaptureThread(time2);
+    if(connected==false)
+    {
+        emit connect_cam_rcv();
+        connected = true;
+    }
     cam->start();
 
     QByteArray datagram;
@@ -206,7 +206,7 @@ void VideoDialog::on_pushButton_2_clicked()
     printf("%s\n", datagram.data());
     send_data(datagram);
 
-    PlayingDialog dlg(id2.data());
+    PlayingDialog dlg(id2.data(),  time2.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -214,13 +214,17 @@ void VideoDialog::on_pushButton_2_clicked()
     connect(&dlg,SIGNAL(rwclicked()),cam,SLOT(rwpressed()));
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
-    cam->quit();
-    send_data("fend");
+    delete cam;
 }
 
 void VideoDialog::on_pushButton_3_clicked()
 {
-    cam = new CaptureThread;
+    cam = new CaptureThread(time3);
+    if(connected==false)
+    {
+        emit connect_cam_rcv();
+        connected = true;
+    }
     cam->start();
 
     QByteArray datagram;
@@ -228,7 +232,7 @@ void VideoDialog::on_pushButton_3_clicked()
     printf("%s\n", datagram.data());
     send_data(datagram);
 
-    PlayingDialog dlg(id3.data());
+    PlayingDialog dlg(id3.data(), time3.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -236,13 +240,17 @@ void VideoDialog::on_pushButton_3_clicked()
     connect(&dlg,SIGNAL(rwclicked()),cam,SLOT(rwpressed()));
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
-    cam->quit();
-    send_data("fend");
+    delete cam;
 }
 
 void VideoDialog::on_pushButton_4_clicked()
 {
-    cam = new CaptureThread;
+    cam = new CaptureThread(time4);
+    if(connected==false)
+    {
+        emit connect_cam_rcv();
+        connected = true;
+    }
     cam->start();
 
     QByteArray datagram;
@@ -250,7 +258,7 @@ void VideoDialog::on_pushButton_4_clicked()
     printf("%s\n", datagram.data());
     send_data(datagram);
 
-    PlayingDialog dlg(id4.data());
+    PlayingDialog dlg(id4.data(),time4.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -258,13 +266,17 @@ void VideoDialog::on_pushButton_4_clicked()
     connect(&dlg,SIGNAL(rwclicked()),cam,SLOT(rwpressed()));
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
-    cam->quit();
-    send_data("fend");
+    delete cam;
 }
 
 void VideoDialog::on_pushButton_5_clicked()
 {
-    cam = new CaptureThread;
+    cam = new CaptureThread(time5);
+    if(connected==false)
+    {
+        emit connect_cam_rcv();
+        connected = true;
+    }
     cam->start();
 
     QByteArray datagram;
@@ -272,7 +284,7 @@ void VideoDialog::on_pushButton_5_clicked()
     printf("%s\n", datagram.data());
     send_data(datagram);
 
-    PlayingDialog dlg(id5.data());
+    PlayingDialog dlg(id5.data(),time5.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -280,13 +292,17 @@ void VideoDialog::on_pushButton_5_clicked()
     connect(&dlg,SIGNAL(rwclicked()),cam,SLOT(rwpressed()));
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
-    cam->quit();
-    send_data("fend");
+   delete cam;
 }
 
 void VideoDialog::on_pushButton_6_clicked()
 {
-    cam = new CaptureThread;
+    cam = new CaptureThread(time6);
+    if(connected==false)
+    {
+        emit connect_cam_rcv();
+        connected = true;
+    }
     cam->start();
 
     QByteArray datagram;
@@ -294,7 +310,7 @@ void VideoDialog::on_pushButton_6_clicked()
     printf("%s\n", datagram.data());
     send_data(datagram);
 
-    PlayingDialog dlg(id6.data());
+    PlayingDialog dlg(id6.data(), time6.data());
     connect(&dlg,SIGNAL(stopclicked()),cam,SLOT(stopcapture()));
     connect(&dlg,SIGNAL(pauseclicked()),cam,SLOT(pausecapture()));
     connect(&dlg,SIGNAL(playclicked()),cam,SLOT(resumecapture()));
@@ -302,8 +318,7 @@ void VideoDialog::on_pushButton_6_clicked()
     connect(&dlg,SIGNAL(rwclicked()),cam,SLOT(rwpressed()));
     dlg.setWindowFlags(Qt::FramelessWindowHint);
     dlg.exec();
-    cam->quit();
-    send_data("fend");
+    delete cam;
 }
 
 void VideoDialog::set_tab(int maxpage)

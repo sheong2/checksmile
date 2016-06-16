@@ -16,6 +16,7 @@ signals:
    void dup_id_result(bool);
    void readydata(QByteArray datagram);
    void set_tab(int maxpage);
+   void auto_capture();
 
 
 public slots:

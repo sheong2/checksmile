@@ -6,6 +6,7 @@
 #include <QTextCodec>
 #include <wkeyboard.h>
 #include <capturethread.h>
+#include <playingdialog.h>
 
 namespace Ui {
 class VideoDialog;
@@ -18,12 +19,14 @@ class VideoDialog : public QDialog
 public:
     explicit VideoDialog(QWidget *parent = 0);
     ~VideoDialog();
+    CaptureThread* getcamthread(){return cam;}
 
 public slots:
     void got_sig_from_searchline();
 
 signals:
     void send_data(QByteArray datagram);
+    void connect_cam_rcv();
 
 private slots:
 
@@ -89,6 +92,8 @@ private:
     QByteArray name6;
 
     CaptureThread * cam;
+
+    bool connected;
 };
 
 #endif // VIDEODIALOG_H

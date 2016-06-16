@@ -2,11 +2,11 @@
 #include "mainwindow.h"
 #define SERVER_IP_ADDR "192.168.10.1"
 #define PORT_ADDR 25000
-#include <QTimer>
 
 rcvThread::rcvThread(QObject *parent) :
     QThread(parent)
 {
+
     socket = new QUdpSocket(this);
     socket->bind(PORT_ADDR);
     printf("bound\n");
@@ -36,6 +36,7 @@ void rcvThread::read_data()
         case('h') :
         case('a') :
         case('s') : emit set_tab(datagram.mid(1,3).toInt()); break;
+        case('f') : emit auto_capture(); break;
         default : printf("wrong\n");
         }
     }

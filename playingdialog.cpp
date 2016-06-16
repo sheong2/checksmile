@@ -18,7 +18,7 @@ char title[]="/mnt/nfs/test_contents/vid000.avi";
 
 
 pid_t pid_temp;
-PlayingDialog::PlayingDialog(char * id, QWidget *parent) :
+PlayingDialog::PlayingDialog(char * id, char * time, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PlayingDialog)
 {
@@ -40,7 +40,7 @@ PlayingDialog::PlayingDialog(char * id, QWidget *parent) :
         title[27]=id[1];
         title[28]=id[2];
 
-        execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
+        execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", time, "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
     }else{
         sighandler_t sig_ret;
         sig_ret=signal(SIGCHLD,sigChldHandler);
@@ -82,7 +82,7 @@ void PlayingDialog::on_BTN_Play_clicked()
             dup(fd_pipe[0]);
             ::close(fd_pipe[0]);
             ::close(fd_pipe[1]);
-            execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", "00:00:30", "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
+            execlp("/mnt/nfs/mplayer","mplayer","-vo", "fbdev2","-ss", time, "-volume","1","-srate","44100", "-geometry", "50%:50%",title,NULL);
         }else{
             sighandler_t sig_ret;
             sig_ret=signal(SIGCHLD,sigChldHandler);
@@ -108,7 +108,7 @@ void PlayingDialog::on_BTN_Stop_clicked()
 
 void PlayingDialog::on_BTN_UP_clicked()
 {
-    write(fd_pipe[1], "o", 1);
+    write(fd_pipe[1], "0", 1);
 }
 
 void PlayingDialog::on_BTN_Down_clicked()
